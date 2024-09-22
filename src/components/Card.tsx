@@ -3,12 +3,12 @@ interface CardProps {
   onClick: () => void;
 }
 
-function Card({ id, onClick }: CardProps) {
+const Card: React.FC<CardProps> = ({ id, onClick }: CardProps) => {
   return (
     <div className="card" data-id={id} onClick={onClick}>
       {id}
     </div>
   );
-}
+};
 
 export default Card;

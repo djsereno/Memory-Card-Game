@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import '../styles/App.css';
 import Card from './Card';
+import Modal from './Modal';
 
-function App() {
-  const [score, setScore] = useState(-1);
+const App = () => {
+  const [gameIsOver, setGameIsOver] = useState(false);
   const [highScore, setHighScore] = useState(0);
   const [prevIds, setPrevIds] = useState<number[]>([]);
 
@@ -17,18 +18,21 @@ function App() {
       endGame();
     } else {
       setPrevIds([...prevIds, id]);
-      setScore(score + 1);
-      console.log(`Score: ${score + 1}, High Score: ${highScore}`);
+      console.log(`Score: ${prevIds.length + 1}, High Score: ${highScore}`);
     }
   };
 
-  const endGame = () => {
-    if (score > highScore) {
-      setHighScore(score);
-      console.log(`New High Score! Old: ${highScore} New: ${score}`);
-    }
-    setScore(-1);
+  const startNewGame = () => {
+    setGameIsOver(false);
     setPrevIds([]);
+  };
+
+  const endGame = () => {
+    setGameIsOver(true);
+    if (prevIds.length > highScore) {
+      setHighScore(prevIds.length);
+      console.log(`New High Score! Old: ${highScore} New: ${prevIds.length}`);
+    }
     console.log('~~~~~~~~~~~GAME OVER!~~~~~~~~~~~');
   };
 
@@ -50,12 +54,19 @@ function App() {
             </div>
           </div>
         </header>
-
         <section className="game-board">{createCards(8)}</section>
       </div>
+      {gameIsOver && (
+        <Modal
+          heading={'Game Over!'}
+          description={'Game is over. Start new game?'}
+          // onClose={() => startNewGame()}
+          onAction={() => startNewGame()}
+        />
+      )}
     </>
   );
-}
+};
 
 const getRandArray = (n: number) => {
   // Returns an array containing integers 1 thru n in random order
