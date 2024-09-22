@@ -17,7 +17,7 @@ const Modal: React.FC<ModalProps> = ({ heading, description, onAction }) => {
         </span> */}
         <h2>{heading}</h2>
         <p>{description}</p>
-        <button onClick={onAction}>Perform Action</button>
+        <button onClick={onAction}>Start New Game</button>
       </div>
     </div>
   );

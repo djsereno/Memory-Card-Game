@@ -18,22 +18,19 @@ const App = () => {
       endGame();
     } else {
       setPrevIds([...prevIds, id]);
-      console.log(`Score: ${prevIds.length + 1}, High Score: ${highScore}`);
     }
   };
 
   const startNewGame = () => {
+    if (prevIds.length > highScore) {
+      setHighScore(prevIds.length);
+    }
     setGameIsOver(false);
     setPrevIds([]);
   };
 
   const endGame = () => {
     setGameIsOver(true);
-    if (prevIds.length > highScore) {
-      setHighScore(prevIds.length);
-      console.log(`New High Score! Old: ${highScore} New: ${prevIds.length}`);
-    }
-    console.log('~~~~~~~~~~~GAME OVER!~~~~~~~~~~~');
   };
 
   return (
@@ -44,12 +41,12 @@ const App = () => {
           <div className="scoreboard">
             <div className="score">
               <p>
-                Score: <span id="current-score">0</span>
+                Score: <span id="current-score">{prevIds.length}</span>
               </p>
             </div>
             <div className="high-score">
               <p>
-                High Score: <span id="high-score">0</span>
+                High Score: <span id="high-score">{highScore}</span>
               </p>
             </div>
           </div>
@@ -58,8 +55,12 @@ const App = () => {
       </div>
       {gameIsOver && (
         <Modal
-          heading={'Game Over!'}
-          description={'Game is over. Start new game?'}
+          heading={prevIds.length > highScore ? '🥇 New High Score!' : '😢 Game Over!'}
+          description={
+            prevIds.length > highScore
+              ? `Previous: ${highScore}  ➡️  New: ${prevIds.length}`
+              : `Your Score: ${prevIds.length}`
+          }
           // onClose={() => startNewGame()}
           onAction={() => startNewGame()}
         />
