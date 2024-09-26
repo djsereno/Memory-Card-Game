@@ -2,7 +2,7 @@ import { useState } from 'react';
 import '../styles/App.css';
 import Card from './Card';
 import Modal from './Modal';
-import callAPI from '../utils/PCTG';
+import getCardData from '../utils/PCTG';
 
 const App = () => {
   const [gameIsOver, setGameIsOver] = useState(false);
@@ -34,7 +34,8 @@ const App = () => {
     setGameIsOver(true);
   };
 
-  const apiData = callAPI();
+  const cardData = getCardData(20);
+  console.log(cardData);
 
   return (
     <>
