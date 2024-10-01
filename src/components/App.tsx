@@ -35,7 +35,6 @@ const App = () => {
   };
 
   const cardData = getCardData(20);
-  console.log(cardData);
 
   return (
     <>

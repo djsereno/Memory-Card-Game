@@ -1,6 +1,6 @@
 const API_KEY = import.meta.env.VITE_PTCG_API_KEY;
 
-const callApi = async () => {
+const getApiResponse = async () => {
   try {
     const response = await fetch(
       'https://api.pokemontcg.io/v2/cards?q=(' +
@@ -22,33 +22,43 @@ const callApi = async () => {
   }
 };
 
-const cleanApiResponse = async () => {
-  const apiResponse = await callApi();
+interface CardData {
+  name: string;
+  images: {
+    large: string;
+  };
+}
+
+const cleanApiResponse = (apiResponse: { data: CardData[] }): object[] => {
   if (!apiResponse) return [];
 
   const responseData = apiResponse.data;
-  const cleanedData = responseData.map((card: { name: string; images: { small: string } }) => ({
+  const cleanedData = responseData.map((card: CardData) => ({
     name: card.name,
-    image: card.images.small
+    image: card.images.large
   }));
 
   return cleanedData;
 };
 
-const shuffle
-
 const getCardData = async (numCards: number) => {
-  const cleanedResponse = await cleanApiResponse();
-  console.log(cleanedResponse);
+  const apiResponse = await getApiResponse();
+  const cleanedResponse = cleanApiResponse(apiResponse);
+  const shuffledCards = shuffleArray(cleanedResponse);
+  const cardData = shuffledCards.slice(0, numCards);
 
-  // Step 1: Shuffle the array using Fisher-Yates (Durstenfeld) shuffle algorithm
-  for (let i = cleanedResponse.length - 1; i > 0; i--) {
+  console.log(cardData);
+
+  return cardData;
+};
+
+const shuffleArray = (arr: object[]): object[] => {
+  const n = arr.length;
+  for (let i = n - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [cleanedResponse[i], cleanedResponse[j]] = [cleanedResponse[j], cleanedResponse[i]]; // Swap elements
+    [arr[i], arr[j]] = [arr[j], arr[i]];
   }
-
-  // Step 2: Return the first 'num' elements from the shuffled array
-  return cleanedResponse.slice(0, numCards);
+  return arr;
 };
 
 export default getCardData;
