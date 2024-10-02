@@ -1,6 +1,9 @@
+import { ApiData, ApiResponse, CardData } from '../interfaces/types';
+import { getRandomArray } from './utils.ts';
+
 const API_KEY = import.meta.env.VITE_PTCG_API_KEY;
 
-const getApiResponse = async () => {
+const fetchApiResponse = async () => {
   try {
     const response = await fetch(
       'https://api.pokemontcg.io/v2/cards?q=(' +
@@ -22,47 +25,30 @@ const getApiResponse = async () => {
   }
 };
 
-interface CardData {
-  name: string;
-  images: {
-    large: string;
-  };
-}
+const extractCardData = (response: ApiResponse): CardData[] => {
+  if (!response) return [];
 
-const cleanApiResponse = (apiResponse: { data: CardData[] }): object[] => {
-  if (!apiResponse) return [];
-
-  const responseData = apiResponse.data;
-  const cleanedData = responseData.map((card: CardData) => ({
+  const responseData = response.data;
+  const cardData = responseData.map((card: ApiData) => ({
     name: card.name,
     image: card.images.large
   }));
 
-  return cleanedData;
+  return cardData;
 };
 
-const getCardData = async (numCards: number) => {
-  const apiResponse = await getApiResponse();
-  const cleanedResponse = cleanApiResponse(apiResponse);
-  const shuffledCards = shuffleArray(cleanedResponse);
-  const cardData = shuffledCards.slice(0, numCards);
+const getRandomCardData = async (numCards: number) => {
+  const apiResponse = await fetchApiResponse();
+  const initialCardData = extractCardData(apiResponse);
+  const randomIndexes = getRandomArray(numCards, initialCardData.length);
+  const cardData = randomIndexes.map((index) => initialCardData[index]);
 
-  console.log(cardData);
+  console.log(initialCardData, randomIndexes, cardData);
 
   return cardData;
 };
 
-const shuffleArray = (arr: object[]): object[] => {
-  const n = arr.length;
-  for (let i = n - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-  return arr;
-};
-
-export default getCardData;
-
+export default getRandomCardData;
 // const rarities = [
 //   'ACE SPEC Rare',
 //   'Amazing Rare',

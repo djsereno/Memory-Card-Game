@@ -3,11 +3,18 @@ interface CardProps {
   onClick: () => void;
 }
 
-const Card: React.FC<CardProps> = ({ id, onClick }: CardProps) => {
+const Card: React.FC<CardProps & { imageUrl: string }> = ({
+  id,
+  onClick,
+  imageUrl,
+}: CardProps & { imageUrl: string }) => {
   return (
-    <div className="card" data-id={id} onClick={onClick}>
-      {id}
-    </div>
+    <div
+      className="card"
+      data-id={id}
+      style={{ backgroundImage: `url(${imageUrl})` }}
+      onClick={onClick}
+    ></div>
   );
 };
 

@@ -1,17 +1,26 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import '../styles/App.css';
 import Card from './Card';
 import Modal from './Modal';
 import getCardData from '../utils/PCTG';
+import { getRandomArray } from '../utils/utils';
 
 const App = () => {
   const [gameIsOver, setGameIsOver] = useState(false);
   const [highScore, setHighScore] = useState(0);
   const [prevIds, setPrevIds] = useState<number[]>([]);
+  // const [cardData, setCardData] = useState < object;
+
+  // useEffect(() => {
+  const cardData = getCardData(20);
+  //   console.log(cardData);
+  // }, []);
 
   const createCards = (numCards: number) => {
-    const randArray = getRandArray(numCards);
-    return randArray.map((id) => <Card onClick={() => handleCardClick(id)} id={id} key={id} />);
+    const randArray = getRandomArray(numCards);
+    return randArray.map((id) => (
+      <Card onClick={() => handleCardClick(id)} id={id} imageUrl={cardData[id].image} key={id} />
+    ));
   };
 
   const handleCardClick = (id: number) => {
@@ -33,8 +42,6 @@ const App = () => {
   const endGame = () => {
     setGameIsOver(true);
   };
-
-  const cardData = getCardData(20);
 
   return (
     <>
@@ -70,14 +77,6 @@ const App = () => {
       )}
     </>
   );
-};
-
-const getRandArray = (n: number) => {
-  // Returns an array containing integers 1 thru n in random order
-  const randArray = Array.from({ length: n }, (_, index) => index);
-  randArray.sort(() => Math.random() - 0.5);
-
-  return randArray;
 };
 
 export default App;
