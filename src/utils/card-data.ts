@@ -1,5 +1,5 @@
 import { ApiData, ApiResponse, CardData } from '../interfaces/types';
-import { getRandomArray } from './utils.ts';
+import { getRandomArray } from './utils';
 
 const API_KEY = import.meta.env.VITE_PTCG_API_KEY;
 
@@ -31,7 +31,7 @@ const extractCardData = (response: ApiResponse): CardData[] => {
   const responseData = response.data;
   const cardData = responseData.map((card: ApiData) => ({
     name: card.name,
-    image: card.images.large
+    image: card.images.small
   }));
 
   return cardData;
@@ -42,8 +42,6 @@ const getRandomCardData = async (numCards: number) => {
   const initialCardData = extractCardData(apiResponse);
   const randomIndexes = getRandomArray(numCards, initialCardData.length);
   const cardData = randomIndexes.map((index) => initialCardData[index]);
-
-  console.log(initialCardData, randomIndexes, cardData);
 
   return cardData;
 };

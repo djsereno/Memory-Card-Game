@@ -1,6 +1,7 @@
 interface ApiData {
   name: string;
   images: {
+    small: string;
     large: string;
   };
 }

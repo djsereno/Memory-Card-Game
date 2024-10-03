@@ -2,19 +2,26 @@ import { useEffect, useState } from 'react';
 import '../styles/App.css';
 import Card from './Card';
 import Modal from './Modal';
-import getCardData from '../utils/PCTG';
+import getRandomCardData from '../utils/card-data';
 import { getRandomArray } from '../utils/utils';
+import { CardData } from '../interfaces/types';
 
 const App = () => {
+  const boardSize = 8;
+  const deckSize = 50;
   const [gameIsOver, setGameIsOver] = useState(false);
   const [highScore, setHighScore] = useState(0);
   const [prevIds, setPrevIds] = useState<number[]>([]);
-  // const [cardData, setCardData] = useState < object;
+  const [cardData, setCardData] = useState<CardData[]>(new Array(deckSize).fill({} as CardData));
 
-  // useEffect(() => {
-  const cardData = getCardData(20);
-  //   console.log(cardData);
-  // }, []);
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await getRandomCardData(deckSize);
+      setCardData(data);
+      console.log(data);
+    };
+    fetchData();
+  }, []);
 
   const createCards = (numCards: number) => {
     const randArray = getRandomArray(numCards);
@@ -61,7 +68,7 @@ const App = () => {
             </div>
           </div>
         </header>
-        <section className="game-board">{createCards(8)}</section>
+        <section className="game-board">{createCards(boardSize)}</section>
       </div>
       {gameIsOver && (
         <Modal
