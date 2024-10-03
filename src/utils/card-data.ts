@@ -1,5 +1,4 @@
 import { ApiData, ApiResponse, CardData } from '../interfaces/types';
-import { getRandomArray } from './utils';
 
 const API_KEY = import.meta.env.VITE_PTCG_API_KEY;
 
@@ -25,7 +24,8 @@ const fetchApiResponse = async () => {
   }
 };
 
-const extractCardData = (response: ApiResponse): CardData[] => {
+const getCardData = async (): Promise<CardData[]> => {
+  const response: ApiResponse = await fetchApiResponse();
   if (!response) return [];
 
   const responseData = response.data;
@@ -37,16 +37,16 @@ const extractCardData = (response: ApiResponse): CardData[] => {
   return cardData;
 };
 
-const getRandomCardData = async (numCards: number) => {
-  const apiResponse = await fetchApiResponse();
-  const initialCardData = extractCardData(apiResponse);
-  const randomIndexes = getRandomArray(numCards, initialCardData.length);
-  const cardData = randomIndexes.map((index) => initialCardData[index]);
+// const getRandomCardData = async (numCards: number) => {
+//   const apiResponse = await fetchApiResponse();
+//   const initialCardData = extractCardData(apiResponse);
+//   const randomIndexes = getRandomArray(numCards, initialCardData.length);
+//   const cardData = randomIndexes.map((index) => initialCardData[index]);
 
-  return cardData;
-};
+//   return cardData;
+// };
 
-export default getRandomCardData;
+export default getCardData;
 // const rarities = [
 //   'ACE SPEC Rare',
 //   'Amazing Rare',

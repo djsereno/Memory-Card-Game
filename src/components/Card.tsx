@@ -6,15 +6,16 @@ interface CardProps {
 const Card: React.FC<CardProps & { imageUrl: string }> = ({
   id,
   onClick,
-  imageUrl,
+  imageUrl
 }: CardProps & { imageUrl: string }) => {
   return (
     <div
       className="card"
       data-id={id}
       style={{ backgroundImage: `url(${imageUrl})` }}
-      onClick={onClick}
-    ></div>
+      onClick={onClick}>
+      {id}
+    </div>
   );
 };
 

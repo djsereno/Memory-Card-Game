@@ -1,10 +1,10 @@
 /**
- * Generates an array of numbers from 1 to n (inclusive).
+ * Generates an array of numbers from 0 to n-1.
  * @param {number} n the length of the array
- * @returns {number[]} an array of numbers from 1 to n
+ * @returns {number[]} an array of numbers from 0 to n-1
  */
 const getSequenceArray = (n: number) => {
-  return Array.from({ length: n }, (_, index) => index + 1);
+  return Array.from({ length: n }, (_, index) => index);
 };
 
 /**
@@ -31,7 +31,7 @@ const getRandomArray = (n: number, upperBound: number = n): number[] => {
   const result: number[] = [];
   const set = new Set<number>();
   while (set.size < n) {
-    const randomNum = Math.floor(Math.random() * (upperBound + 1));
+    const randomNum = Math.floor(Math.random() * upperBound);
     if (!set.has(randomNum)) {
       set.add(randomNum);
       result.push(randomNum);

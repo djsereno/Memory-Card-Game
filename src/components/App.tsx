@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import '../styles/App.css';
 import Card from './Card';
 import Modal from './Modal';
-import getRandomCardData from '../utils/card-data';
-import { getRandomArray } from '../utils/utils';
+import getCardData from '../utils/card-data';
+import { getRandomArray, getSequenceArray } from '../utils/utils';
 import { CardData } from '../interfaces/types';
 
 const App = () => {
@@ -12,21 +12,34 @@ const App = () => {
   const [gameIsOver, setGameIsOver] = useState(false);
   const [highScore, setHighScore] = useState(0);
   const [prevIds, setPrevIds] = useState<number[]>([]);
-  const [cardData, setCardData] = useState<CardData[]>(new Array(deckSize).fill({} as CardData));
+  const [cardData, setCardData] = useState<CardData[]>([]);
+  const [deckIndexes, setDeckIndexes] = useState<number[]>([]);
+  const [cardIndexes, setCardIndexes] = useState<number[]>(getSequenceArray(boardSize));
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await getRandomCardData(deckSize);
+      const data = await getCardData();
+      const randomIndexes = getRandomArray(deckSize, data.length);
       setCardData(data);
-      console.log(data);
+      setDeckIndexes(randomIndexes);
+      setCardIndexes(randomIndexes.slice(0, boardSize));
     };
     fetchData();
   }, []);
 
+  useEffect(() => {
+    console.log('CardData:', cardData);
+    console.log('DeckIndexes:', deckIndexes);
+  }, [cardData, deckIndexes]);
+
   const createCards = (numCards: number) => {
-    const randArray = getRandomArray(numCards);
-    return randArray.map((id) => (
-      <Card onClick={() => handleCardClick(id)} id={id} imageUrl={cardData[id].image} key={id} />
+    return cardIndexes.map((id) => (
+      <Card
+        onClick={() => handleCardClick(id)}
+        id={id}
+        imageUrl={cardData[id]?.image || ''}
+        key={id}
+      />
     ));
   };
 
