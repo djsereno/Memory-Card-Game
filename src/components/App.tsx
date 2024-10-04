@@ -17,16 +17,26 @@ const App = () => {
   const [cardIndexes, setCardIndexes] = useState<number[]>(getSequenceArray(boardSize));
 
   useEffect(() => {
-    const fetchData = async () => {
+    let isMounted = true;
+    const fetchCardData = async () => {
       const data = await getCardData();
-      setCardData(data);
-      const randomIndexes = getRandomArray(deckSize, data.length);
-      const randomSubset = getRandomSubset(boardSize, randomIndexes);
-      setDeckIndexes(randomIndexes);
-      setCardIndexes(randomSubset);
+      if (isMounted) setCardData(data);
     };
-    fetchData();
+    fetchCardData();
+
+    return () => {
+      isMounted = false; // This is to avoid double call due to React Strict Mode
+    };
   }, []);
+
+  useEffect(() => {
+    if (!cardData.length) return;
+
+    const randomIndexes = getRandomArray(deckSize, cardData.length);
+    const randomSubset = getRandomSubset(boardSize, randomIndexes);
+    setDeckIndexes(randomIndexes);
+    setCardIndexes(randomSubset);
+  }, [cardData]);
 
   useEffect(() => {
     console.log('CardData:', cardData);
