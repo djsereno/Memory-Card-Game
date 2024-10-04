@@ -10,9 +10,9 @@ const Card: React.FC<CardProps & { imageUrl: string }> = ({
 }: CardProps & { imageUrl: string }) => {
   return (
     <div
-      className="card"
+      className={`card ${id === -1 ? 'flipped' : ''}`}
       data-id={id}
-      style={{ backgroundImage: `url(${imageUrl})` }}
+      style={id !== -1 ? { backgroundImage: `url(${imageUrl})` } : undefined}
       onClick={onClick}>
       {id}
     </div>

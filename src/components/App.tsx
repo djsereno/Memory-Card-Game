@@ -3,7 +3,7 @@ import '../styles/App.css';
 import Card from './Card';
 import Modal from './Modal';
 import getCardData from '../utils/card-data';
-import { getRandomArray, getRandomSubset, getSequenceArray } from '../utils/utils';
+import { getRandomArray, getRandomSubset } from '../utils/utils';
 import { CardData } from '../interfaces/types';
 
 const App = () => {
@@ -14,7 +14,7 @@ const App = () => {
   const [prevIds, setPrevIds] = useState<number[]>([]);
   const [cardData, setCardData] = useState<CardData[]>([]);
   const [deckIndexes, setDeckIndexes] = useState<number[]>([]);
-  const [cardIndexes, setCardIndexes] = useState<number[]>(getSequenceArray(boardSize));
+  const [cardIndexes, setCardIndexes] = useState<number[]>(Array(boardSize).fill(-1));
 
   useEffect(() => {
     let isMounted = true;
@@ -51,12 +51,12 @@ const App = () => {
   }, [prevIds]);
 
   const createCards = () => {
-    return cardIndexes.map((id) => (
+    return cardIndexes.map((id, index) => (
       <Card
         onClick={() => handleCardClick(id)}
         id={id}
         imageUrl={cardData[id]?.image || ''}
-        key={id}
+        key={index}
       />
     ));
   };

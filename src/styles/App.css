@@ -66,6 +66,13 @@ header h1 {
   transform: scale(1.05);
 }
 
+.card.flipped {
+  background-image: url('../assets/cardback.png');
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
 @media (max-width: 768px) {
   .game-board {
     grid-template-columns: repeat(2, 1fr);
