@@ -3,12 +3,12 @@ import '../styles/App.css';
 import Card from './Card';
 import Modal from './Modal';
 import getCardData from '../utils/card-data';
-import { getRandomArray, getSequenceArray } from '../utils/utils';
+import { getRandomArray, getRandomSubset, getSequenceArray } from '../utils/utils';
 import { CardData } from '../interfaces/types';
 
 const App = () => {
   const boardSize = 8;
-  const deckSize = 50;
+  const deckSize = 10;
   const [gameIsOver, setGameIsOver] = useState(false);
   const [highScore, setHighScore] = useState(0);
   const [prevIds, setPrevIds] = useState<number[]>([]);
@@ -19,20 +19,28 @@ const App = () => {
   useEffect(() => {
     const fetchData = async () => {
       const data = await getCardData();
-      const randomIndexes = getRandomArray(deckSize, data.length);
       setCardData(data);
+      const randomIndexes = getRandomArray(deckSize, data.length);
+      const randomSubset = getRandomSubset(boardSize, randomIndexes);
       setDeckIndexes(randomIndexes);
-      setCardIndexes(randomIndexes.slice(0, boardSize));
+      setCardIndexes(randomSubset);
     };
     fetchData();
   }, []);
 
   useEffect(() => {
     console.log('CardData:', cardData);
-    console.log('DeckIndexes:', deckIndexes);
-  }, [cardData, deckIndexes]);
+  }, [cardData]);
 
-  const createCards = (numCards: number) => {
+  useEffect(() => {
+    console.log('DeckIndexes:', deckIndexes);
+  }, [deckIndexes]);
+
+  useEffect(() => {
+    console.log('PrevIds:', prevIds);
+  }, [prevIds]);
+
+  const createCards = () => {
     return cardIndexes.map((id) => (
       <Card
         onClick={() => handleCardClick(id)}
@@ -47,6 +55,8 @@ const App = () => {
     if (prevIds.includes(id)) {
       endGame();
     } else {
+      const newCardIds = getRandomSubset(boardSize, deckIndexes);
+      setCardIndexes(newCardIds);
       setPrevIds([...prevIds, id]);
     }
   };
@@ -55,6 +65,10 @@ const App = () => {
     if (prevIds.length > highScore) {
       setHighScore(prevIds.length);
     }
+    const randomIndexes = getRandomArray(deckSize, cardData.length);
+    const randomSubset = getRandomSubset(boardSize, randomIndexes);
+    setDeckIndexes(randomIndexes);
+    setCardIndexes(randomSubset);
     setGameIsOver(false);
     setPrevIds([]);
   };
@@ -81,7 +95,7 @@ const App = () => {
             </div>
           </div>
         </header>
-        <section className="game-board">{createCards(boardSize)}</section>
+        <section className="game-board">{createCards()}</section>
       </div>
       {gameIsOver && (
         <Modal

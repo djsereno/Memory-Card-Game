@@ -40,4 +40,25 @@ const getRandomArray = (n: number, upperBound: number = n): number[] => {
   return result;
 };
 
-export { getRandomArray, getSequenceArray, shuffleArray };
+/**
+ * Selects a random subset of elements from the given array.
+ * @template T
+ * @param {number} n The number of elements to select
+ * @param {T[]} arr The array to sample from
+ * @returns {T[]} A new array containing a random subset of elements from the given array
+ */
+const getRandomSubset = <T>(n: number, arr: T[]): T[] => {
+  const result: T[] = [];
+  const set = new Set<T>();
+  while (set.size < n) {
+    const randomIndex = Math.floor(Math.random() * arr.length);
+    const item = arr[randomIndex];
+    if (!set.has(item)) {
+      set.add(item);
+      result.push(item);
+    }
+  }
+  return result;
+};
+
+export { getRandomArray, getRandomSubset, getSequenceArray, shuffleArray };
