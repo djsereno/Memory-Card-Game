@@ -5,7 +5,8 @@ const API_KEY = import.meta.env.VITE_PTCG_API_KEY;
 const fetchApiResponse = async () => {
   try {
     const response = await fetch(
-      'https://api.pokemontcg.io/v2/cards?q=(' +
+      'https://api.pokemontcg.io/v2/cards?' +
+        'page=1&pageSize=250&q=(' +
         'rarity:"Illustration Rare" OR ' +
         'rarity:"Special Illustration Rare")',
       {
