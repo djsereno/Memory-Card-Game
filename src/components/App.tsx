@@ -1,10 +1,12 @@
+import '../styles/App.scss';
+
 import { useEffect, useState } from 'react';
-import '../styles/App.css';
-import Card from './Card';
-import Modal from './Modal';
+
+import { CardData } from '../interfaces/types';
 import getCardData from '../utils/card-data';
 import { getRandomArray, getRandomSubset } from '../utils/utils';
-import { CardData } from '../interfaces/types';
+import Card from './Card';
+import Modal from './Modal';
 
 const App = () => {
   const boardSize = 8;

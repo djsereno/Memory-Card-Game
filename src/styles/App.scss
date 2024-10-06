@@ -1,0 +1,156 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  color: black;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #f4f4f4;
+}
+
+.container {
+  width: min(80vw, 1200px);
+  height: auto;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+header h1 {
+  margin-bottom: 30px;
+  font-size: 3rem;
+}
+
+.scoreboard {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 30px;
+  padding: 0 10px;
+  font-size: 1.5rem;
+}
+
+.game-board {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  width: 100%;
+  height: auto;
+  gap: 20px;
+}
+
+.card {
+  display: flex;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 245 / 342;
+  border-radius: 4%;
+  background-size: cover;
+  /* background-color: #007bff; */
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.1);
+  color: red;
+  font-size: 2rem;
+  cursor: pointer;
+  transition:
+    transform 0.3s ease,
+    background-color 0.3s ease;
+}
+
+.card:hover {
+  transform: scale(1.05);
+}
+
+.card.flipped {
+  background-image: url('../assets/cardback.png');
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+// .shine {
+//   position: relative;
+//   overflow: hidden;
+
+//   &::before {
+//     background: linear-gradient(to right, fade_out(#fff, 1) 0%, fade_out(#fff, 0.7) 100%);
+//     content: '';
+//     display: block;
+//     height: 100%;
+//     left: -100%;
+//     position: absolute;
+//     top: 0;
+//     transform: skewX(-25deg);
+//     width: 50%;
+//     z-index: 2;
+//   }
+
+//   &:hover,
+//   &:focus {
+//     &::before {
+//       animation: shine 0.85s;
+//     }
+//   }
+
+//   @keyframes shine {
+//     100% {
+//       left: 125%;
+//     }
+//   }
+// }
+
+.shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.shine::before {
+  background: linear-gradient(to right, fade_out(#fff, 1) 0%, fade_out(#fff, 0.7) 100%);
+  content: '';
+  display: block;
+  height: 100%;
+  left: -100%;
+  position: absolute;
+  top: 0;
+  transform: skewX(-25deg);
+  width: 50%;
+  z-index: 2;
+}
+
+.shine.animated::before {
+  animation: shine 0.85s;
+}
+
+@keyframes shine {
+  100% {
+    left: 125%;
+  }
+}
+
+@media (max-width: 768px) {
+  .game-board {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  header h1 {
+    font-size: 2rem;
+  }
+
+  .scoreboard {
+    font-size: 1.2rem;
+  }
+
+  .game-board {
+    grid-template-columns: repeat(1, 1fr);
+    gap: 10px;
+  }
+}
