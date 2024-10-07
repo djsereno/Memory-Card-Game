@@ -1,26 +1,36 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import '../styles/LoadingModal.scss';
 
-const LoadingModal: React.FC = () => {
-  const [dots, setDots] = useState<string>('');
+interface LoadingModalProps {
+  isLoaded: boolean;
+  handleAnimationEnd: () => void;
+}
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setDots((prevDots) => {
-        if (prevDots.length === 3) {
-          return '';
-        }
-        return prevDots + '.';
-      });
-    }, 500);
+const LoadingModal: React.FC<LoadingModalProps> = ({
+  isLoaded,
+  handleAnimationEnd
+}: LoadingModalProps) => {
+  const [animationState, setAnimationState] = useState<string>('loading');
 
-    return () => clearInterval(interval);
-  }, []);
+  const handleAnimationIteration = (event: React.AnimationEvent) => {
+    if (!event.animationName.includes('shake') || !isLoaded) return;
+
+    switch (animationState) {
+      case 'loading':
+        setAnimationState('complete');
+        break;
+      case 'complete':
+        handleAnimationEnd();
+        break;
+    }
+  };
 
   return (
     <div className="loading-modal">
-      <div className="spinner"></div>
-      <div className="loading-text">Loading{dots}</div>
+      <div className={`pokeball ${animationState}`} onAnimationIteration={handleAnimationIteration}>
+        <div className="pokeball__button"></div>
+      </div>
+      <div className="loading-text">Loading...</div>
     </div>
   );
 };

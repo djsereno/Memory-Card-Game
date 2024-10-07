@@ -18,6 +18,8 @@ const App = () => {
   const [cardData, setCardData] = useState<CardData[]>([]);
   const [deckIndexes, setDeckIndexes] = useState<number[]>([]);
   const [cardIndexes, setCardIndexes] = useState<number[]>(Array(boardSize).fill(-1));
+  const [loadingIsAnimating, setLoadingIsAnimating] = useState(true);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -39,6 +41,7 @@ const App = () => {
     const randomSubset = getRandomSubset(boardSize, randomIndexes);
     setDeckIndexes(randomIndexes);
     setCardIndexes(randomSubset);
+    setIsLoaded(true);
   }, [cardData]);
 
   useEffect(() => {
@@ -110,8 +113,9 @@ const App = () => {
         </header>
         <section className="game-board">{createCards()}</section>
       </div>
-      <div>{!cardData.length && <LoadingModal />}</div>
-      {/* {<LoadingModal />} */}
+      {loadingIsAnimating && (
+        <LoadingModal isLoaded={isLoaded} handleAnimationEnd={() => setLoadingIsAnimating(false)} />
+      )}
       {gameIsOver && (
         <Modal
           heading={prevIds.length > highScore ? '🥇 New High Score!' : '😢 Game Over!'}
