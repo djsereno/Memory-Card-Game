@@ -6,6 +6,7 @@ import { CardData } from '../interfaces/types';
 import getCardData from '../utils/card-data';
 import { getRandomArray, getRandomSubset } from '../utils/utils';
 import Card from './Card';
+import LoadingModal from './LoadingModal';
 import Modal from './Modal';
 
 const App = () => {
@@ -109,6 +110,8 @@ const App = () => {
         </header>
         <section className="game-board">{createCards()}</section>
       </div>
+      <div>{!cardData.length && <LoadingModal />}</div>
+      {/* {<LoadingModal />} */}
       {gameIsOver && (
         <Modal
           heading={prevIds.length > highScore ? '🥇 New High Score!' : '😢 Game Over!'}
