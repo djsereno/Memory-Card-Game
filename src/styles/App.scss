@@ -43,6 +43,7 @@ header h1 {
   width: 100%;
   height: auto;
   gap: 20px;
+
 }
 
 .card {
@@ -105,6 +106,7 @@ header h1 {
   perspective: 1000px; /* Remove this if you don't want the 3D effect */
 
   aspect-ratio: 245 / 342;
+
   cursor: pointer;
   // transition:
   //   transform 0.3s ease,
@@ -121,10 +123,13 @@ header h1 {
   transform-style: preserve-3d;
   box-shadow: 0 6px 8px rgba(0, 0, 0, 0.1);
   border-radius: 4%;
+
+
+
 }
 
 /* Do an horizontal flip when you move the mouse over the flip box container */
-.flip-card:hover .flip-card-inner {
+.flip-card.face-down .flip-card-inner {
   transform: rotateY(180deg);
 }
 
@@ -163,7 +168,7 @@ header h1 {
 }
 
 /* Style the back side */
-.flip-card-front {
+.flip-card-back {
   transform: rotateY(180deg);
 }
 

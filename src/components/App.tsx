@@ -20,6 +20,7 @@ const App = () => {
   const [cardIndexes, setCardIndexes] = useState<number[]>(Array(boardSize).fill(-1));
   const [loadingIsAnimating, setLoadingIsAnimating] = useState(true);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isRevealed, setIsRevealed] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -42,19 +43,24 @@ const App = () => {
     setDeckIndexes(randomIndexes);
     setCardIndexes(randomSubset);
     setIsLoaded(true);
+    setIsRevealed(true);
   }, [cardData]);
 
-  useEffect(() => {
-    console.log('CardData:', cardData);
-  }, [cardData]);
+  // useEffect(() => {
+  //   console.log('CardData:', cardData);
+  // }, [cardData]);
+
+  // useEffect(() => {
+  //   console.log('DeckIndexes:', deckIndexes);
+  // }, [deckIndexes]);
+
+  // useEffect(() => {
+  //   console.log('PrevIds:', prevIds);
+  // }, [prevIds]);
 
   useEffect(() => {
-    console.log('DeckIndexes:', deckIndexes);
-  }, [deckIndexes]);
-
-  useEffect(() => {
-    console.log('PrevIds:', prevIds);
-  }, [prevIds]);
+    console.log('isRevealed:', isRevealed);
+  }, [isRevealed]);
 
   const createCards = () => {
     return cardIndexes.map((id, index) => (
@@ -62,7 +68,9 @@ const App = () => {
         onClick={() => handleCardClick(id)}
         id={id}
         imageUrl={cardData[id]?.image || ''}
+        isRevealed={isRevealed}
         key={index}
+        transitionDelay={index * 40}
       />
     ));
   };
@@ -71,9 +79,14 @@ const App = () => {
     if (prevIds.includes(id)) {
       endGame();
     } else {
-      const newCardIds = getRandomSubset(boardSize, deckIndexes);
-      setCardIndexes(newCardIds);
-      setPrevIds([...prevIds, id]);
+      setIsRevealed(false);
+
+      setTimeout(() => {
+        const newCardIds = getRandomSubset(boardSize, deckIndexes);
+        setCardIndexes(newCardIds);
+        setPrevIds([...prevIds, id]);
+        setIsRevealed(true);
+      }, 1000);
     }
   };
 

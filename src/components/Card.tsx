@@ -5,10 +5,18 @@ import cardback from '../assets/cardback.png';
 interface CardProps {
   id: number;
   imageUrl: string;
+  isRevealed: boolean;
   onClick: () => void;
+  transitionDelay: number;
 }
 
-const Card: React.FC<CardProps> = ({ id, imageUrl, onClick }: CardProps) => {
+const Card: React.FC<CardProps> = ({
+  id,
+  imageUrl,
+  isRevealed,
+  onClick,
+  transitionDelay
+}: CardProps) => {
   const [isAnimated, setIsAnimated] = useState(false);
 
   const handleMouseEnter = () => {
@@ -19,11 +27,11 @@ const Card: React.FC<CardProps> = ({ id, imageUrl, onClick }: CardProps) => {
     setIsAnimated(false);
   };
 
-  const className = 'flip-card'
-    .concat(id === -1 ? ' flipped' : ' shine')
-    .concat(isAnimated ? ' animated' : '');
+  const className = 'flip-card'.concat(isRevealed ? ' face-up' : ' face-down');
+  // .concat(id === -1 ? ' flipped' : ' shine')
+  // .concat(isAnimated ? ' animated' : '');
 
-  const style = id !== -1 ? { backgroundImage: `url(${imageUrl})` } : undefined;
+  // const style = id !== -1 ? { backgroundImage: `url(${imageUrl})` } : undefined;
 
   return (
     // <div
@@ -35,14 +43,14 @@ const Card: React.FC<CardProps> = ({ id, imageUrl, onClick }: CardProps) => {
     //   {id}
     // </div>
 
-    <div className="flip-card">
-      <div className="flip-card-inner">
-        <div className="flip-card-back">
-          <img src={cardback} />
-        </div>
+    <div className={className} onClick={onClick}>
+      <div className="flip-card-inner" style={{ transitionDelay: `${transitionDelay}ms` }}>
         <div className="flip-card-front">
           <img src={imageUrl} />
           <span>{id}</span>
+        </div>
+        <div className="flip-card-back">
+          <img src={cardback} />
         </div>
       </div>
     </div>
