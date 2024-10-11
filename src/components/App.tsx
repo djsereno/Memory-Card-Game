@@ -2,6 +2,7 @@ import '../styles/App.scss';
 
 import { useEffect, useState } from 'react';
 
+import logo from '../assets/logo.png';
 import { CardData } from '../interfaces/types';
 import getCardData from '../utils/card-data';
 import { getRandomArray, getRandomSubset } from '../utils/utils';
@@ -77,7 +78,7 @@ const App = () => {
       }, 1000);
     }
   };
-  
+
   const startNewGame = () => {
     if (prevIds.length > highScore) {
       setHighScore(prevIds.length);
@@ -98,7 +99,7 @@ const App = () => {
     <>
       <div className="container">
         <header>
-          <h1>Memory Card Game</h1>
+          <img className="logo" src={logo} alt="logo" />
           <div className="scoreboard">
             <div className="score">
               <p>
