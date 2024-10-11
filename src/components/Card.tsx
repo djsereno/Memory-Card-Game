@@ -1,3 +1,5 @@
+import '../styles/Card.scss';
+
 import { useState } from 'react';
 
 import cardback from '../assets/cardback.png';
@@ -27,23 +29,17 @@ const Card: React.FC<CardProps> = ({
     setIsAnimated(false);
   };
 
-  const className = 'flip-card'.concat(isRevealed ? ' face-up' : ' face-down');
+  const className = 'flip-card'
+    .concat(isRevealed ? ' face-up' : ' face-down')
+    .concat(isAnimated ? ' animated' : '');
   // .concat(id === -1 ? ' flipped' : ' shine')
-  // .concat(isAnimated ? ' animated' : '');
-
-  // const style = id !== -1 ? { backgroundImage: `url(${imageUrl})` } : undefined;
 
   return (
-    // <div
-    //   className={className}
-    //   style={style}
-    //   onClick={onClick}
-    //   onMouseEnter={handleMouseEnter}
-    //   onAnimationEnd={handleAnimationEnd}>
-    //   {id}
-    // </div>
-
-    <div className={className} onClick={onClick}>
+    <div
+      className={className}
+      onClick={onClick}
+      onMouseEnter={handleMouseEnter}
+      onAnimationEnd={handleAnimationEnd}>
       <div className="flip-card-inner" style={{ transitionDelay: `${transitionDelay}ms` }}>
         <div className="flip-card-front">
           <img src={imageUrl} />

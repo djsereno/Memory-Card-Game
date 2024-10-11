@@ -22,6 +22,7 @@ const App = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isRevealed, setIsRevealed] = useState(false);
 
+  // Get card data from API
   useEffect(() => {
     let isMounted = true;
     const fetchCardData = async () => {
@@ -35,6 +36,8 @@ const App = () => {
     };
   }, []);
 
+  // Initialize the deck picking random cards from the API card data,
+  // and initialize the game board by picking random cards from the deck
   useEffect(() => {
     if (!cardData.length) return;
 
@@ -46,22 +49,6 @@ const App = () => {
     setIsRevealed(true);
   }, [cardData]);
 
-  // useEffect(() => {
-  //   console.log('CardData:', cardData);
-  // }, [cardData]);
-
-  // useEffect(() => {
-  //   console.log('DeckIndexes:', deckIndexes);
-  // }, [deckIndexes]);
-
-  // useEffect(() => {
-  //   console.log('PrevIds:', prevIds);
-  // }, [prevIds]);
-
-  useEffect(() => {
-    console.log('isRevealed:', isRevealed);
-  }, [isRevealed]);
-
   const createCards = () => {
     return cardIndexes.map((id, index) => (
       <Card
@@ -70,26 +57,27 @@ const App = () => {
         imageUrl={cardData[id]?.image || ''}
         isRevealed={isRevealed}
         key={index}
-        transitionDelay={index * 40}
+        transitionDelay={index * 40} // Animation transition delay when flipping
       />
     ));
   };
 
   const handleCardClick = (id: number) => {
+    // If the card has already been clicked before, then game over
     if (prevIds.includes(id)) {
       endGame();
     } else {
+      // Otherwise, flip the cards, replace with new ones from the deck, and reveal
+      const newCardIds = getRandomSubset(boardSize, deckIndexes);
       setIsRevealed(false);
-
       setTimeout(() => {
-        const newCardIds = getRandomSubset(boardSize, deckIndexes);
         setCardIndexes(newCardIds);
         setPrevIds([...prevIds, id]);
         setIsRevealed(true);
       }, 1000);
     }
   };
-
+  
   const startNewGame = () => {
     if (prevIds.length > highScore) {
       setHighScore(prevIds.length);
