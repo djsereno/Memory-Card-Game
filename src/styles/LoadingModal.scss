@@ -14,16 +14,17 @@
 }
 
 .loading-text {
-  color: #fff;
+  -webkit-text-stroke: 2px white;
+  color: black;
   font-weight: bold;
-  font-size: 1.5rem;
+  font-size: 3.5rem;
 }
 
 // Loading spinner
 .pokeball {
   position: relative;
-  width: 200px;
-  height: 200px;
+  width: 240px;
+  height: 240px;
   background: url('../assets/loading.png') no-repeat center/contain;
 
   &--loading {
@@ -38,10 +39,10 @@
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 26px;
-    height: 26px;
+    width: 30px;
+    height: 30px;
     transform: translate(-50%, -50%);
-    border: 2px solid #37464e;
+    border: 2px solid #8c9498;
     border-radius: 50%;
     background: #fff;
 
