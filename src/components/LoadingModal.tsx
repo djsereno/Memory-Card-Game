@@ -27,8 +27,10 @@ const LoadingModal: React.FC<LoadingModalProps> = ({
 
   return (
     <div className="loading-modal">
-      <div className={`pokeball ${animationState}`} onAnimationIteration={handleAnimationIteration}>
-        <div className="pokeball__button"></div>
+      <div
+        className={`pokeball pokeball--${animationState}`}
+        onAnimationIteration={handleAnimationIteration}>
+        <div className={`pokeball__button pokeball__button--${animationState}`}></div>
       </div>
       <div className="loading-text">Loading...</div>
     </div>

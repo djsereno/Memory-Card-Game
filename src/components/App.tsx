@@ -37,8 +37,9 @@ const App = () => {
     };
   }, []);
 
-  // Initialize the deck picking random cards from the API card data,
-  // and initialize the game board by picking random cards from the deck
+  // Once cardData is loaded from the API, initialize the deck by picking
+  // random cards from the API card data, and initialize the game board
+  // by picking random cards from the deck
   useEffect(() => {
     if (!cardData.length) return;
 
@@ -47,8 +48,12 @@ const App = () => {
     setDeckIndexes(randomIndexes);
     setCardIndexes(randomSubset);
     setIsLoaded(true);
-    setIsRevealed(true);
   }, [cardData]);
+
+  // Reveal the cards when the loading animation ends
+  useEffect(() => {
+    if (!loadingIsAnimating) setIsRevealed(true);
+  }, [loadingIsAnimating]);
 
   const createCards = () => {
     return cardIndexes.map((id, index) => (
