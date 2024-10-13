@@ -24,6 +24,11 @@ const App = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isRevealed, setIsRevealed] = useState(false);
 
+  // TODO: Add logic to flip cards over when game ends before resetting new game
+  // TODO: Add logic to prevent multiple clicks from incrementing score
+  // TODO: Update styling to fit content to screen
+  // TOTO: Improve screen responsiveness
+
   // Get card data from API
   useEffect(() => {
     let isMounted = true;
@@ -86,6 +91,7 @@ const App = () => {
     }
   };
 
+  // TODO Add logic to flip cards over when game ends before resetting new game
   const startNewGame = () => {
     if (prevIds.length > highScore) {
       setHighScore(currentScore);
@@ -114,11 +120,11 @@ const App = () => {
       )}
       {gameIsOver && (
         <Modal
-          heading={prevIds.length > highScore ? '🥇 New High Score!' : '😢 Game Over!'}
+          heading={currentScore > highScore ? '🥇 New High Score!' : '😢 Game Over!'}
           description={
-            prevIds.length > highScore
-              ? `Previous: ${highScore}  ➡️  New: ${prevIds.length}`
-              : `Your Score: ${prevIds.length}`
+            currentScore > highScore
+              ? `Previous: ${highScore}  ➡️  New: ${currentScore}`
+              : `Your Score: ${currentScore}`
           }
           // onClose={() => startNewGame()}
           onAction={() => startNewGame()}

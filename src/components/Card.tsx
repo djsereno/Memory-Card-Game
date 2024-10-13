@@ -34,10 +34,17 @@ const Card: React.FC<CardProps> = ({
     .concat(isAnimated ? ' animated' : '');
   // .concat(id === -1 ? ' flipped' : ' shine')
 
+  console.log(isRevealed, isAnimated);
+
   return (
     <div
       className={className}
-      onClick={onClick}
+      onClick={() => {
+        // TODO: Add logic to prevent multiple clicks from incrementing score
+        console.log(isRevealed, isAnimated);
+        if (!isRevealed) return;
+        onClick();
+      }}
       onMouseEnter={handleMouseEnter}
       onAnimationEnd={handleAnimationEnd}>
       <div className="flip-card-inner" style={{ transitionDelay: `${transitionDelay}ms` }}>
