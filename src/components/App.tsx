@@ -28,6 +28,9 @@ const App = () => {
   // TODO: Add logic to prevent multiple clicks from incrementing score
   // TODO: Update styling to fit content to screen
   // TOTO: Improve screen responsiveness
+  // TODO: Fix card hover animations and shine effects
+  // TODO: Style game over modal
+  // TODO: Prevent text highlighting across the game
 
   // Get card data from API
   useEffect(() => {
