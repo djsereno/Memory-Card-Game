@@ -1,0 +1,35 @@
+header {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: center;
+  padding: 30px 0;
+}
+
+.logo {
+  grid-column: 2;
+  align-self: center;
+  justify-self: center;
+  height: 100px;
+}
+
+.instructions > * {
+  color: white;
+  font-style: italic;
+  font-size: 1.1rem;
+}
+
+.score-board {
+  justify-items: end;
+}
+
+.current-score,
+.high-score {
+  color: white;
+  font-weight: bold;
+  font-size: 1.5rem;
+  text-align: end;
+}
+
+.current-score {
+  justify-self: end;
+}

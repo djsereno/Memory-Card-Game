@@ -2,18 +2,19 @@ import '../styles/App.scss';
 
 import { useEffect, useState } from 'react';
 
-import logo from '../assets/logo.png';
 import { CardData } from '../interfaces/types';
 import getCardData from '../utils/card-data';
 import { getRandomArray, getRandomSubset } from '../utils/utils';
 import Card from './Card';
 import LoadingModal from './LoadingModal';
 import Modal from './Modal';
+import Header from './Header';
 
 const App = () => {
   const boardSize = 8;
   const deckSize = 10;
   const [gameIsOver, setGameIsOver] = useState(false);
+  const [currentScore, setCurrentScore] = useState(0);
   const [highScore, setHighScore] = useState(0);
   const [prevIds, setPrevIds] = useState<number[]>([]);
   const [cardData, setCardData] = useState<CardData[]>([]);
@@ -75,6 +76,7 @@ const App = () => {
     } else {
       // Otherwise, flip the cards, replace with new ones from the deck, and reveal
       const newCardIds = getRandomSubset(boardSize, deckIndexes);
+      setCurrentScore(currentScore + 1);
       setIsRevealed(false);
       setTimeout(() => {
         setCardIndexes(newCardIds);
@@ -86,13 +88,14 @@ const App = () => {
 
   const startNewGame = () => {
     if (prevIds.length > highScore) {
-      setHighScore(prevIds.length);
+      setHighScore(currentScore);
     }
     const randomIndexes = getRandomArray(deckSize, cardData.length);
     const randomSubset = getRandomSubset(boardSize, randomIndexes);
     setDeckIndexes(randomIndexes);
     setCardIndexes(randomSubset);
     setGameIsOver(false);
+    setCurrentScore(0);
     setPrevIds([]);
   };
 
@@ -102,22 +105,8 @@ const App = () => {
 
   return (
     <>
+      {<Header currentScore={currentScore} highScore={highScore} />}
       <div className="container">
-        <header>
-          <img className="logo" src={logo} alt="logo" />
-          <div className="scoreboard">
-            <div className="score">
-              <p>
-                Score: <span id="current-score">{prevIds.length}</span>
-              </p>
-            </div>
-            <div className="high-score">
-              <p>
-                High Score: <span id="high-score">{highScore}</span>
-              </p>
-            </div>
-          </div>
-        </header>
         <section className="game-board">{createCards()}</section>
       </div>
       {loadingIsAnimating && (
