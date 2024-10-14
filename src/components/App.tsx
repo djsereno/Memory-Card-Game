@@ -13,7 +13,6 @@ import Header from './Header';
 const App = () => {
   const boardSize = 8;
   const deckSize = 10;
-  const [gameIsOver, setGameIsOver] = useState(false);
   const [currentScore, setCurrentScore] = useState(0);
   const [highScore, setHighScore] = useState(0);
   const [prevIds, setPrevIds] = useState<number[]>([]);
@@ -21,22 +20,40 @@ const App = () => {
   const [deckIndexes, setDeckIndexes] = useState<number[]>([]);
   const [cardIndexes, setCardIndexes] = useState<number[]>(Array(boardSize).fill(-1));
   const [loadingIsAnimating, setLoadingIsAnimating] = useState(true);
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [isRevealed, setIsRevealed] = useState(false);
 
-  // TODO: Add logic to flip cards over when game ends before resetting new game
-  // TODO: Add logic to prevent multiple clicks from incrementing score
+  type GameState =
+    | 'loading-calling-api'
+    | 'loading-animation-finishing'
+    | 'shuffling-deck'
+    | 'picking-new-cards'
+    | 'cards-flipping-up'
+    | 'waiting-for-action'
+    | 'cards-flipping-down'
+    | 'game-over';
+
+  const [gameState, setGameState] = useState<GameState>('loading-calling-api');
+
   // TODO: Update styling to fit content to screen
   // TOTO: Improve screen responsiveness
   // TODO: Fix card hover animations and shine effects
+  // TODO: Final refactor
+
+  useEffect(() => {
+    console.log(gameState);
+  }, [gameState]);
 
   // Get card data from API
   useEffect(() => {
     let isMounted = true;
+
     const fetchCardData = async () => {
       const data = await getCardData();
-      if (isMounted) setCardData(data);
+      if (isMounted) {
+        setCardData(data);
+        setGameState('loading-animation-finishing');
+      }
     };
+
     fetchCardData();
 
     return () => {
@@ -44,78 +61,94 @@ const App = () => {
     };
   }, []);
 
-  // Once cardData is loaded from the API, initialize the deck by picking
-  // random cards from the API card data, and initialize the game board
-  // by picking random cards from the deck
+  // Wait for the loading animation to finish before updating the game state
   useEffect(() => {
-    if (!cardData.length) return;
-
-    const randomIndexes = getRandomArray(deckSize, cardData.length);
-    const randomSubset = getRandomSubset(boardSize, randomIndexes);
-    setDeckIndexes(randomIndexes);
-    setCardIndexes(randomSubset);
-    setIsLoaded(true);
-  }, [cardData]);
-
-  // Reveal the cards when the loading animation ends
-  useEffect(() => {
-    if (!loadingIsAnimating) setIsRevealed(true);
+    if (!loadingIsAnimating) {
+      setGameState('shuffling-deck');
+    }
   }, [loadingIsAnimating]);
+
+  useEffect(() => {
+    if (gameState !== 'shuffling-deck') return;
+
+    shuffleDeck();
+    setGameState('picking-new-cards');
+  }, [gameState]);
+
+  useEffect(() => {
+    if (gameState !== 'picking-new-cards') return;
+
+    pickNewCards();
+    setGameState('cards-flipping-up');
+  }, [gameState]);
+
+  const handleTransitionEnd = () => {
+    if (gameState === 'cards-flipping-up') setGameState('waiting-for-action');
+    if (gameState === 'cards-flipping-down')
+      setGameState(prevIds.length === 0 ? 'shuffling-deck' : 'picking-new-cards');
+  };
 
   const createCards = () => {
     return cardIndexes.map((id, index) => (
       <Card
         onClick={() => handleCardClick(id)}
+        onTransitionEnd={index === cardIndexes.length - 1 ? handleTransitionEnd : undefined}
         id={id}
+        index={index}
         imageUrl={cardData[id]?.image || ''}
-        isRevealed={isRevealed}
+        isRevealed={
+          gameState === 'cards-flipping-up' ||
+          gameState === 'waiting-for-action' ||
+          gameState === 'game-over'
+        }
         key={index}
-        transitionDelay={index * 40} // Animation transition delay when flipping
+        transitionDelay={index * 50} // Animation transition delay when flipping
       />
     ));
   };
 
   const handleCardClick = (id: number) => {
+    if (gameState !== 'waiting-for-action') return;
+
     // If the card has already been clicked before, then game over
     if (prevIds.includes(id)) {
-      endGame();
+      setGameState('game-over');
     } else {
-      // Otherwise, flip the cards, replace with new ones from the deck, and reveal
-      const newCardIds = getRandomSubset(boardSize, deckIndexes);
+      // Otherwise, flip the cards
+      setPrevIds([...prevIds, id]);
       setCurrentScore(currentScore + 1);
-      setIsRevealed(false);
-      setTimeout(() => {
-        setCardIndexes(newCardIds);
-        setPrevIds([...prevIds, id]);
-        setIsRevealed(true);
-      }, 1000);
+      setGameState('cards-flipping-down');
     }
   };
 
-  // TODO Add logic to flip cards over when game ends before resetting new game
+  const shuffleDeck = () => {
+    const randomIndexes = getRandomArray(deckSize, cardData.length);
+    setDeckIndexes(randomIndexes);
+  };
+
+  const pickNewCards = () => {
+    const newCardIds = getRandomSubset(boardSize, deckIndexes);
+    setCardIndexes(newCardIds);
+  };
+
   const startNewGame = () => {
     if (prevIds.length > highScore) {
       setHighScore(currentScore);
     }
-    const randomIndexes = getRandomArray(deckSize, cardData.length);
-    const randomSubset = getRandomSubset(boardSize, randomIndexes);
-    setDeckIndexes(randomIndexes);
-    setCardIndexes(randomSubset);
-    setGameIsOver(false);
     setCurrentScore(0);
     setPrevIds([]);
-  };
-
-  const endGame = () => {
-    setGameIsOver(true);
+    setGameState('cards-flipping-down');
   };
 
   return (
     <>
-      {loadingIsAnimating && (
-        <LoadingModal isLoaded={isLoaded} handleAnimationEnd={() => setLoadingIsAnimating(false)} />
+      {(gameState === 'loading-calling-api' || gameState === 'loading-animation-finishing') && (
+        <LoadingModal
+          isLoaded={gameState === 'loading-animation-finishing'}
+          handleAnimationEnd={() => setLoadingIsAnimating(false)}
+        />
       )}
-      {gameIsOver && (
+      {gameState === 'game-over' && (
         <Modal currentScore={currentScore} highScore={highScore} onAction={() => startNewGame()} />
       )}
       <Header currentScore={currentScore} highScore={highScore} />

@@ -31,7 +31,7 @@
     animation: shake-loading 1.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) infinite;
   }
   &--complete {
-    animation: shake-complete 2s cubic-bezier(0.36, 0.07, 0.19, 0.97) infinite;
+    animation: shake-complete 1.2s cubic-bezier(0.36, 0.07, 0.19, 0.97) infinite;
   }
 
   &__button {
@@ -50,7 +50,7 @@
       animation: blink-loading 1.5s ease-in-out infinite;
     }
     &--complete {
-      animation: blink-complete 2s ease-in-out infinite;
+      animation: blink-complete 1.2s ease-in-out infinite;
     }
   }
 }
@@ -111,11 +111,13 @@
   0% {
     background: #eee;
   }
-  50% {
-    background: #94feb9;
-    box-shadow: 0 0 20px 10px #94feb9;
+  20% {
+    background: #75ffa5;
+    box-shadow: 0 0 20px 10px #75ffa5;
   }
   100% {
-    background: #eee;
+    background: #75ffa5;
+    box-shadow: 0 0 20px 10px #75ffa5;
+    // background: #eee;
   }
 }
