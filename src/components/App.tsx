@@ -29,8 +29,6 @@ const App = () => {
   // TODO: Update styling to fit content to screen
   // TOTO: Improve screen responsiveness
   // TODO: Fix card hover animations and shine effects
-  // TODO: Style game over modal
-  // TODO: Prevent text highlighting across the game
 
   // Get card data from API
   useEffect(() => {
@@ -114,25 +112,16 @@ const App = () => {
 
   return (
     <>
-      {<Header currentScore={currentScore} highScore={highScore} />}
-      <div className="container">
-        <section className="game-board">{createCards()}</section>
-      </div>
       {loadingIsAnimating && (
         <LoadingModal isLoaded={isLoaded} handleAnimationEnd={() => setLoadingIsAnimating(false)} />
       )}
       {gameIsOver && (
-        <Modal
-          heading={currentScore > highScore ? '🥇 New High Score!' : '😢 Game Over!'}
-          description={
-            currentScore > highScore
-              ? `Previous: ${highScore}  ➡️  New: ${currentScore}`
-              : `Your Score: ${currentScore}`
-          }
-          // onClose={() => startNewGame()}
-          onAction={() => startNewGame()}
-        />
+        <Modal currentScore={currentScore} highScore={highScore} onAction={() => startNewGame()} />
       )}
+      <Header currentScore={currentScore} highScore={highScore} />
+      <div className="container">
+        <section className="game-board">{createCards()}</section>
+      </div>
     </>
   );
 };

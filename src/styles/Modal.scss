@@ -1,0 +1,95 @@
+/* The Modal (background) */
+.modal {
+  display: flex;
+  z-index: 1000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(8px); /* Add blur for a sleek effect */
+  background-color: rgba(0, 0, 0, 0.7); /* Slightly darker background */
+  pointer-events: auto;
+
+  /* Modal Content */
+  &__content {
+    position: relative;
+    // width: min(50%, 450px);
+    padding: 30px;
+    transform: scale(0.95); /* Slight scaling for entrance animation */
+    border-radius: 12px;
+    background: linear-gradient(135deg, #ffffff, #f3f3f3); /* Soft gradient background */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); /* Stronger shadow */
+    text-align: center; /* Centered text */
+    animation: pop-in 0.4s ease-out forwards; /* Pop-in animation */
+  }
+
+  /* Modal Heading */
+  &__heading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    color: #333;
+    font-weight: bold;
+    font-size: 2.1rem;
+
+    img {
+      height: 40px;
+    }
+  }
+
+  &__emojis {
+    margin: 10px auto;
+    font-size: 3rem;
+  }
+
+  &__score {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    gap: 40px;
+
+    & > * {
+      color: #555;
+      font-size: 1.2rem;
+    }
+  }
+
+  /* Button */
+  &__button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: black;
+    color: white;
+    font-weight: bold;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition:
+      transform 0.3s,
+      background-color 0.3s,
+      box-shadow 0.3s;
+
+    &:hover {
+      transform: scale(1.05); /* Slight hover effect */
+      background-color: #ff1e3b;
+      box-shadow: 0 5px 15px rgba(255, 75, 92, 0.3);
+    }
+  }
+}
+
+/* Pop-in Animation */
+@keyframes pop-in {
+  0% {
+    transform: scale(0.85);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
