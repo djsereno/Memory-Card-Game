@@ -1,6 +1,7 @@
 /* The flip card container */
 .flip-card {
   aspect-ratio: 245 / 342;
+  max-width: 245px;
   background-color: transparent;
   cursor: pointer;
   perspective: 1000px;

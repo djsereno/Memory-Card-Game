@@ -19,6 +19,7 @@ body {
   justify-content: center;
   min-height: 100vh;
   margin: 0;
+
   background:
     var(--_g),
     var(--_g) calc(2 * var(--s)) calc(2 * var(--s)),
@@ -32,39 +33,36 @@ body {
   background-size: calc(4 * var(--s)) calc(4 * var(--s));
 }
 
-.container {
-  width: min(80vw, 1200px);
-  height: auto;
-  padding-bottom: 20px;
-  text-align: center;
+#root {
+  width: min(100vw, 800px);
+  margin: 30px;
 }
 
 .game-board {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  width: 100%;
+  width: auto;
   height: auto;
   gap: 20px;
 }
 
 @media (max-width: 768px) {
+  #root {
+    width: calc(245px * 2 + 20px);
+  }
+
   .game-board {
     grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
   }
 }
 
 @media (max-width: 480px) {
-  header h1 {
-    font-size: 2rem;
+  #root {
+    width: 400px;
   }
 
-  .scoreboard {
-    font-size: 1.2rem;
-  }
-
-  .game-board {
-    grid-template-columns: repeat(1, 1fr);
-    gap: 10px;
-  }
+  // .game-board {
+  //   grid-template-columns: repeat(1, 1fr);
+  //   gap: 10px;
+  // }
 }

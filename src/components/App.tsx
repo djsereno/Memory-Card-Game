@@ -19,11 +19,10 @@ const App = () => {
   const [cardData, setCardData] = useState<CardData[]>([]);
   const [deckIndexes, setDeckIndexes] = useState<number[]>([]);
   const [cardIndexes, setCardIndexes] = useState<number[]>(Array(boardSize).fill(-1));
-  const [loadingIsAnimating, setLoadingIsAnimating] = useState(true);
 
   type GameState =
-    | 'loading-calling-api'
-    | 'loading-animation-finishing'
+    | 'fetching-card-data'
+    | 'card-data-loaded'
     | 'shuffling-deck'
     | 'picking-new-cards'
     | 'cards-flipping-up'
@@ -31,7 +30,7 @@ const App = () => {
     | 'cards-flipping-down'
     | 'game-over';
 
-  const [gameState, setGameState] = useState<GameState>('loading-calling-api');
+  const [gameState, setGameState] = useState<GameState>('fetching-card-data');
 
   // TODO: Update styling to fit content to screen
   // TOTO: Improve screen responsiveness
@@ -50,7 +49,7 @@ const App = () => {
       const data = await getCardData();
       if (isMounted) {
         setCardData(data);
-        setGameState('loading-animation-finishing');
+        setGameState('card-data-loaded');
       }
     };
 
@@ -61,25 +60,19 @@ const App = () => {
     };
   }, []);
 
-  // Wait for the loading animation to finish before updating the game state
   useEffect(() => {
-    if (!loadingIsAnimating) {
-      setGameState('shuffling-deck');
+    switch (gameState) {
+      case 'shuffling-deck':
+        shuffleDeck();
+        setGameState('picking-new-cards');
+        break;
+      case 'picking-new-cards':
+        pickNewCards();
+        setGameState('cards-flipping-up');
+        break;
+      default:
+        break;
     }
-  }, [loadingIsAnimating]);
-
-  useEffect(() => {
-    if (gameState !== 'shuffling-deck') return;
-
-    shuffleDeck();
-    setGameState('picking-new-cards');
-  }, [gameState]);
-
-  useEffect(() => {
-    if (gameState !== 'picking-new-cards') return;
-
-    pickNewCards();
-    setGameState('cards-flipping-up');
   }, [gameState]);
 
   const handleTransitionEnd = () => {
@@ -110,11 +103,10 @@ const App = () => {
   const handleCardClick = (id: number) => {
     if (gameState !== 'waiting-for-action') return;
 
-    // If the card has already been clicked before, then game over
+    // Check if card has already been clicked
     if (prevIds.includes(id)) {
       setGameState('game-over');
     } else {
-      // Otherwise, flip the cards
       setPrevIds([...prevIds, id]);
       setCurrentScore(currentScore + 1);
       setGameState('cards-flipping-down');
@@ -142,19 +134,17 @@ const App = () => {
 
   return (
     <>
-      {(gameState === 'loading-calling-api' || gameState === 'loading-animation-finishing') && (
+      {(gameState === 'fetching-card-data' || gameState === 'card-data-loaded') && (
         <LoadingModal
-          isLoaded={gameState === 'loading-animation-finishing'}
-          handleAnimationEnd={() => setLoadingIsAnimating(false)}
+          isLoaded={gameState === 'card-data-loaded'}
+          handleAnimationEnd={() => setGameState('shuffling-deck')}
         />
       )}
       {gameState === 'game-over' && (
         <Modal currentScore={currentScore} highScore={highScore} onAction={() => startNewGame()} />
       )}
       <Header currentScore={currentScore} highScore={highScore} />
-      <div className="container">
-        <section className="game-board">{createCards()}</section>
-      </div>
+      <section className="game-board">{createCards()}</section>
     </>
   );
 };
