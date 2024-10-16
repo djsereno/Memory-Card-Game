@@ -32,7 +32,7 @@ const App = () => {
 
   const [gameState, setGameState] = useState<GameState>('fetching-card-data');
 
-  // TODO: Fix card hover animations and shine effects
+  // TODO: Bug when clicking last card
   // TODO: Final refactor
 
   useEffect(() => {
@@ -74,9 +74,17 @@ const App = () => {
   }, [gameState]);
 
   const handleTransitionEnd = () => {
-    if (gameState === 'cards-flipping-up') setGameState('waiting-for-action');
-    if (gameState === 'cards-flipping-down')
+    if (gameState === 'cards-flipping-up') {
+      console.log('TRANSITION END: cards-flipping-up >>> waiting-for-action');
+      setGameState('waiting-for-action');
+    }
+    if (gameState === 'cards-flipping-down') {
+      console.log(
+        'TRANSITION END: cards-flipping-down >>> ',
+        prevIds.length === 0 ? 'shuffling-deck' : 'picking-new-cards'
+      );
       setGameState(prevIds.length === 0 ? 'shuffling-deck' : 'picking-new-cards');
+    }
   };
 
   const createCards = () => {
@@ -92,6 +100,7 @@ const App = () => {
           gameState === 'waiting-for-action' ||
           gameState === 'game-over'
         }
+        isClickable={gameState === 'waiting-for-action'}
         key={index}
         transitionDelay={index * 50} // Animation transition delay when flipping
       />

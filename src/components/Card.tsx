@@ -1,5 +1,7 @@
 import '../styles/Card.scss';
 
+import { useState } from 'react';
+
 import cardback from '../assets/cardback.png';
 
 interface CardProps {
@@ -7,6 +9,7 @@ interface CardProps {
   index: number;
   imageUrl: string;
   isRevealed: boolean;
+  isClickable: boolean;
   onClick: () => void;
   onTransitionEnd?: () => void;
   transitionDelay: number;
@@ -14,45 +17,42 @@ interface CardProps {
 
 const Card: React.FC<CardProps> = ({
   id,
-  // index,
+  index,
   imageUrl,
   isRevealed,
+  isClickable,
   onClick,
   onTransitionEnd,
   transitionDelay
 }: CardProps) => {
-  // const [isAnimated, setIsAnimated] = useState(false);
+  const [isAnimated, setIsAnimated] = useState(false);
 
-  // const handleMouseEnter = () => {
-  //   setIsAnimated(true);
-  // };
+  const handleMouseEnter = () => {
+    if (isClickable) setIsAnimated(true);
+  };
 
-  // const handleAnimationEnd = () => {
-  //   setIsAnimated(false);
-  // };
+  const handleAnimationEnd = () => {
+    setIsAnimated(false);
+  };
 
-  const className = 'flip-card'.concat(isRevealed ? ' face-up' : ' face-down');
-  // .concat(isAnimated ? ' animated' : '');
-  // .concat(id === -1 ? ' flipped' : ' shine')
-
-  // console.log(isRevealed, isAnimated);
+  const className = 'flip-card'
+    .concat(isRevealed ? ' face-up' : ' face-down')
+    .concat(isClickable ? ' clickable' : '');
 
   return (
     <div
       className={className}
       onClick={() => {
-        // TODO: Add logic to prevent multiple clicks from incrementing score
-        // console.log(isRevealed, isAnimated);
-        if (!isRevealed) return;
         onClick();
+        setIsAnimated(false);
       }}
-      // onMouseEnter={handleMouseEnter}
-      // onAnimationEnd={handleAnimationEnd}
+      onMouseEnter={handleMouseEnter}
+      onAnimationEnd={handleAnimationEnd}
       onTransitionEnd={onTransitionEnd}>
       <div className="flip-card-inner" style={{ transitionDelay: `${transitionDelay}ms` }}>
-        <div className="flip-card-front">
+        <div className={`flip-card-front ${isAnimated && isClickable ? ' shine' : ''}`}>
           <img src={imageUrl} />
-          <span>{id}</span>
+          {/* <span>{id}</span> */}
         </div>
         <div className="flip-card-back">
           <img src={cardback} />

@@ -17,13 +17,6 @@
   </p>
 </div>
 
-## TODO
-- [x] Add high score message to Game Over modal
-- [ ] Implement image API
-
-## ISSUES
-- [ ] On Game Over, cards are still shuffling
-
 ## Built With
 
 - React
