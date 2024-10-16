@@ -34,8 +34,8 @@ body {
 }
 
 #root {
-  width: min(100vw, 800px);
-  margin: 30px;
+  width: min(100vw, 950px);
+  margin: 20px;
 }
 
 .game-board {
@@ -48,7 +48,7 @@ body {
 
 @media (max-width: 768px) {
   #root {
-    width: calc(245px * 2 + 20px);
+    width: min(80vw, 1000px);
   }
 
   .game-board {
@@ -57,12 +57,7 @@ body {
 }
 
 @media (max-width: 480px) {
-  #root {
-    width: 400px;
+  .game-board {
+    grid-template-columns: repeat(1, 1fr);
   }
-
-  // .game-board {
-  //   grid-template-columns: repeat(1, 1fr);
-  //   gap: 10px;
-  // }
 }

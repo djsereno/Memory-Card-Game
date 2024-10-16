@@ -32,7 +32,7 @@ const getCardData = async (): Promise<CardData[]> => {
   const responseData = response.data;
   const cardData = responseData.map((card: ApiData) => ({
     name: card.name,
-    image: card.images.small
+    image: card.images.large
   }));
 
   return cardData;
