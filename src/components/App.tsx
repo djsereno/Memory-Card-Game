@@ -32,8 +32,6 @@ const App = () => {
 
   const [gameState, setGameState] = useState<GameState>('fetching-card-data');
 
-  // TODO: Update styling to fit content to screen
-  // TOTO: Improve screen responsiveness
   // TODO: Fix card hover animations and shine effects
   // TODO: Final refactor
 

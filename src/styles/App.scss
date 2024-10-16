@@ -38,6 +38,18 @@ body {
   margin: 20px;
 }
 
+body::before {
+  z-index: -1;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgb(144, 144, 144);
+  background: radial-gradient(circle, rgba(0, 0, 0, 0) 40%, rgb(0, 0, 0, 0.7) 100%);
+  content: '';
+}
+
 .game-board {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
