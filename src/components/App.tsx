@@ -19,6 +19,7 @@ const App = () => {
   const [cardData, setCardData] = useState<CardData[]>([]);
   const [deckIndexes, setDeckIndexes] = useState<number[]>([]);
   const [cardIndexes, setCardIndexes] = useState<number[]>(Array(boardSize).fill(-1));
+  const [cardsFaceUp, setCardsFaceUp] = useState<boolean[]>(Array(boardSize).fill(false));
 
   type GameState =
     | 'fetching-card-data'
@@ -32,7 +33,6 @@ const App = () => {
 
   const [gameState, setGameState] = useState<GameState>('fetching-card-data');
 
-  // TODO: Bug when clicking last card
   // TODO: Final refactor
 
   useEffect(() => {
@@ -73,25 +73,28 @@ const App = () => {
     }
   }, [gameState]);
 
-  const handleTransitionEnd = () => {
-    if (gameState === 'cards-flipping-up') {
-      console.log('TRANSITION END: cards-flipping-up >>> waiting-for-action');
-      setGameState('waiting-for-action');
-    }
-    if (gameState === 'cards-flipping-down') {
-      console.log(
-        'TRANSITION END: cards-flipping-down >>> ',
-        prevIds.length === 0 ? 'shuffling-deck' : 'picking-new-cards'
-      );
+  const handleTransitionEnd = (index: number) => {
+    if (!(gameState === 'cards-flipping-up' || gameState === 'cards-flipping-down')) return;
+
+    const newCardsFaceUp = [...cardsFaceUp];
+    newCardsFaceUp[index] = gameState === 'cards-flipping-up';
+
+    const allCardsFaceUp = newCardsFaceUp.every((status) => status === true);
+    const allCardsFaceDown = newCardsFaceUp.every((status) => status === false);
+
+    if (gameState === 'cards-flipping-up' && allCardsFaceUp) setGameState('waiting-for-action');
+    if (gameState === 'cards-flipping-down' && allCardsFaceDown)
       setGameState(prevIds.length === 0 ? 'shuffling-deck' : 'picking-new-cards');
-    }
+
+    setCardsFaceUp(newCardsFaceUp);
   };
 
   const createCards = () => {
     return cardIndexes.map((id, index) => (
       <Card
         onClick={() => handleCardClick(id)}
-        onTransitionEnd={index === cardIndexes.length - 1 ? handleTransitionEnd : undefined}
+        onTransitionEnd={() => handleTransitionEnd(index)}
+        // onTransitionEnd={index === cardIndexes.length - 1 ? handleTransitionEnd : undefined}
         id={id}
         index={index}
         imageUrl={cardData[id]?.image || ''}
