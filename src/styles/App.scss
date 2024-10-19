@@ -33,11 +33,6 @@ body {
   background-size: calc(4 * var(--s)) calc(4 * var(--s));
 }
 
-#root {
-  width: min(100vw, 950px);
-  margin: 20px;
-}
-
 body::before {
   z-index: -1;
   position: fixed;
@@ -50,12 +45,17 @@ body::before {
   content: '';
 }
 
+#root {
+  width: min(100vw, 800px);
+  margin: 20px;
+}
+
 .game-board {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   width: auto;
   height: auto;
-  gap: 20px;
+  gap: 15px;
 }
 
 @media (max-width: 768px) {
