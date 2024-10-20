@@ -1,4 +1,4 @@
-import '../styles/Modal.scss';
+import '../styles/GameOverModal.scss';
 
 import pokeball from '../assets/pokeball.png';
 

@@ -23,8 +23,8 @@ const Card = ({
 }: CardProps) => {
   const [isShining, setIsShining] = useState<boolean>(false); // Controls the activation of the shining animation
   const className = 'flip-card'
-    .concat(isRevealed ? ' face-up' : ' face-down')
-    .concat(isClickable ? ' clickable' : '');
+    .concat(isRevealed ? ' flip-card--face-up' : ' flip-card--face-down')
+    .concat(isClickable ? ' flip-card--clickable' : '');
 
   const handleMouseEnter = () => {
     if (isClickable) setIsShining(true); // Initiate the shining animation
@@ -44,12 +44,13 @@ const Card = ({
       onMouseEnter={handleMouseEnter}
       onAnimationEnd={handleAnimationEnd}
       onTransitionEnd={onTransitionEnd}>
-      <div className="flip-card-inner" style={{ transitionDelay: `${transitionDelay}ms` }}>
-        <div className={`flip-card-front ${isShining && isClickable ? ' shine' : ''}`}>
-          <img src={imageUrl} />
+      <div className={`flip-card__inner`} style={{ transitionDelay: `${transitionDelay}ms` }}>
+        <div
+          className={`flip-card__front ${isShining && isClickable ? 'flip-card__front--shine' : ''}`}>
+          <img src={imageUrl} alt="Front of card" />
         </div>
-        <div className="flip-card-back">
-          <img src={cardback} />
+        <div className="flip-card__back">
+          <img src={cardback} alt="Back of card" />
         </div>
       </div>
     </div>
