@@ -1,43 +1,46 @@
 import '../styles/App.scss';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { CardData } from '../interfaces/types';
 import getCardData from '../utils/card-data';
 import { getRandomArray, getRandomSubset } from '../utils/utils';
 import Card from './Card';
-import LoadingModal from './LoadingModal';
-import Modal from './Modal';
+import GameOverModal from './GameOverModal';
 import Header from './Header';
+import LoadingModal from './LoadingModal';
+
+type GameState =
+  | 'fetching-card-data'
+  | 'card-data-loaded'
+  | 'getting-new-deck'
+  | 'getting-new-hand'
+  | 'cards-flipping-up'
+  | 'waiting-for-action'
+  | 'cards-flipping-down'
+  | 'game-over';
 
 const App = () => {
   const boardSize = 8;
-  const deckSize = 10;
-  const [currentScore, setCurrentScore] = useState(0);
-  const [highScore, setHighScore] = useState(0);
-  const [prevIds, setPrevIds] = useState<number[]>([]);
-  const [cardData, setCardData] = useState<CardData[]>([]);
-  const [deckIndexes, setDeckIndexes] = useState<number[]>([]);
-  const [cardIndexes, setCardIndexes] = useState<number[]>(Array(boardSize).fill(-1));
-  const [cardsFaceUp, setCardsFaceUp] = useState<boolean[]>(Array(boardSize).fill(false));
-
-  type GameState =
-    | 'fetching-card-data'
-    | 'card-data-loaded'
-    | 'shuffling-deck'
-    | 'picking-new-cards'
-    | 'cards-flipping-up'
-    | 'waiting-for-action'
-    | 'cards-flipping-down'
-    | 'game-over';
-
+  const deckSize = 25;
   const [gameState, setGameState] = useState<GameState>('fetching-card-data');
+  const [allCards, setAllCards] = useState<CardData[]>([]);
+  const [deckCardIds, setDeckCardIds] = useState<number[]>([]);
+  const [handCardIds, setHandCardIds] = useState<number[]>(Array(boardSize).fill(-1));
+  const [selectionHistory, setSelectionHistory] = useState<number[]>([]);
+  const [isFaceUp, setIsFaceUp] = useState<boolean[]>(Array(boardSize).fill(false));
+  const [currentScore, setCurrentScore] = useState<number>(0);
+  const [highScore, setHighScore] = useState<number>(0);
 
-  // TODO: Final refactor
+  const getNewDeck = useCallback(() => {
+    const newDeckIds = getRandomArray(deckSize, allCards.length);
+    setDeckCardIds(newDeckIds);
+  }, [allCards.length]);
 
-  useEffect(() => {
-    console.log(gameState);
-  }, [gameState]);
+  const getNewHand = useCallback(() => {
+    const newCardIds = getRandomSubset(boardSize, deckCardIds);
+    setHandCardIds(newCardIds);
+  }, [deckCardIds]);
 
   // Get card data from API
   useEffect(() => {
@@ -46,7 +49,7 @@ const App = () => {
     const fetchCardData = async () => {
       const data = await getCardData();
       if (isMounted) {
-        setCardData(data);
+        setAllCards(data);
         setGameState('card-data-loaded');
       }
     };
@@ -58,87 +61,87 @@ const App = () => {
     };
   }, []);
 
+  // Game state progression
   useEffect(() => {
     switch (gameState) {
-      case 'shuffling-deck':
-        shuffleDeck();
-        setGameState('picking-new-cards');
+      case 'getting-new-deck':
+        getNewDeck();
+        setGameState('getting-new-hand');
         break;
-      case 'picking-new-cards':
-        pickNewCards();
+      case 'getting-new-hand':
+        getNewHand();
         setGameState('cards-flipping-up');
         break;
       default:
         break;
     }
-  }, [gameState]);
+  }, [gameState, getNewDeck, getNewHand]);
 
-  const handleTransitionEnd = (index: number) => {
-    if (!(gameState === 'cards-flipping-up' || gameState === 'cards-flipping-down')) return;
-
-    const newCardsFaceUp = [...cardsFaceUp];
-    newCardsFaceUp[index] = gameState === 'cards-flipping-up';
-
-    const allCardsFaceUp = newCardsFaceUp.every((status) => status === true);
-    const allCardsFaceDown = newCardsFaceUp.every((status) => status === false);
-
-    if (gameState === 'cards-flipping-up' && allCardsFaceUp) setGameState('waiting-for-action');
-    if (gameState === 'cards-flipping-down' && allCardsFaceDown)
-      setGameState(prevIds.length === 0 ? 'shuffling-deck' : 'picking-new-cards');
-
-    setCardsFaceUp(newCardsFaceUp);
-  };
-
-  const createCards = () => {
-    return cardIndexes.map((id, index) => (
-      <Card
-        onClick={() => handleCardClick(id)}
-        onTransitionEnd={() => handleTransitionEnd(index)}
-        // onTransitionEnd={index === cardIndexes.length - 1 ? handleTransitionEnd : undefined}
-        id={id}
-        index={index}
-        imageUrl={cardData[id]?.image || ''}
-        isRevealed={
-          gameState === 'cards-flipping-up' ||
-          gameState === 'waiting-for-action' ||
-          gameState === 'game-over'
-        }
-        isClickable={gameState === 'waiting-for-action'}
-        key={index}
-        transitionDelay={index * 50} // Animation transition delay when flipping
-      />
-    ));
-  };
-
+  /**
+   * Handles a card click event. If the game is in the 'waiting-for-action' state,
+   * it checks if the card has been selected before. If yes, it sets the game state to
+   * 'game-over'; otherwise, it updates selection history, increments the score,
+   * and sets the state to 'cards-flipping-down'.
+   */
   const handleCardClick = (id: number) => {
     if (gameState !== 'waiting-for-action') return;
 
     // Check if card has already been clicked
-    if (prevIds.includes(id)) {
+    if (selectionHistory.includes(id)) {
       setGameState('game-over');
     } else {
-      setPrevIds([...prevIds, id]);
+      setSelectionHistory([...selectionHistory, id]);
       setCurrentScore(currentScore + 1);
       setGameState('cards-flipping-down');
     }
   };
 
-  const shuffleDeck = () => {
-    const randomIndexes = getRandomArray(deckSize, cardData.length);
-    setDeckIndexes(randomIndexes);
+  /**
+   * Handles the transition end event for a card flip, notifying the app when the flip
+   * is complete. Once all cards are flipped up or down, it may progress the game
+   * to 'waiting-for-action' or prepare for a new deck or hand.
+   */
+  const handleCardFlipTransition = (index: number) => {
+    if (!(gameState === 'cards-flipping-up' || gameState === 'cards-flipping-down')) return;
+
+    const newIsFaceUp = [...isFaceUp];
+    newIsFaceUp[index] = gameState === 'cards-flipping-up';
+
+    const allCardsFaceUp = newIsFaceUp.every((status) => status === true);
+    const allCardsFaceDown = newIsFaceUp.every((status) => status === false);
+
+    if (gameState === 'cards-flipping-up' && allCardsFaceUp) setGameState('waiting-for-action');
+    if (gameState === 'cards-flipping-down' && allCardsFaceDown)
+      // Get new deck at the beginning of the game (when selection history is empty)
+      setGameState(selectionHistory.length === 0 ? 'getting-new-deck' : 'getting-new-hand');
+
+    setIsFaceUp(newIsFaceUp);
   };
 
-  const pickNewCards = () => {
-    const newCardIds = getRandomSubset(boardSize, deckIndexes);
-    setCardIndexes(newCardIds);
+  const createCards = () => {
+    return handCardIds.map((id, index) => (
+      <Card
+        key={index}
+        imageUrl={allCards[id]?.imageUrl || ''}
+        isClickable={gameState === 'waiting-for-action'}
+        isRevealed={
+          gameState === 'cards-flipping-up' ||
+          gameState === 'waiting-for-action' ||
+          gameState === 'game-over'
+        }
+        onClick={() => handleCardClick(id)}
+        onTransitionEnd={() => handleCardFlipTransition(index)}
+        transitionDelay={index * 50} // Flipping transition delay
+      />
+    ));
   };
 
   const startNewGame = () => {
-    if (prevIds.length > highScore) {
+    if (selectionHistory.length > highScore) {
       setHighScore(currentScore);
     }
     setCurrentScore(0);
-    setPrevIds([]);
+    setSelectionHistory([]);
     setGameState('cards-flipping-down');
   };
 
@@ -147,11 +150,15 @@ const App = () => {
       {(gameState === 'fetching-card-data' || gameState === 'card-data-loaded') && (
         <LoadingModal
           isLoaded={gameState === 'card-data-loaded'}
-          handleAnimationEnd={() => setGameState('shuffling-deck')}
+          endLoadingSequence={() => setGameState('getting-new-deck')}
         />
       )}
       {gameState === 'game-over' && (
-        <Modal currentScore={currentScore} highScore={highScore} onAction={() => startNewGame()} />
+        <GameOverModal
+          currentScore={currentScore}
+          highScore={highScore}
+          onAction={() => startNewGame()}
+        />
       )}
       <Header currentScore={currentScore} highScore={highScore} />
       <section className="game-board">{createCards()}</section>

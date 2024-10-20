@@ -30,9 +30,9 @@ const getCardData = async (): Promise<CardData[]> => {
   if (!response) return [];
 
   const responseData = response.data;
-  const cardData = responseData.map((card: ApiData) => ({
+  const cardData: CardData[] = responseData.map((card: ApiData) => ({
     name: card.name,
-    image: card.images.large
+    imageUrl: card.images.large
   }));
 
   return cardData;

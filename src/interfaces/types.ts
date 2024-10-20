@@ -12,7 +12,7 @@ interface ApiResponse {
 
 interface CardData {
   name: string;
-  image: string;
+  imageUrl: string;
 }
 
 export type { ApiData, ApiResponse, CardData };

@@ -26,7 +26,7 @@
   position: relative;
   width: 240px;
   height: 240px;
-  background: url('../assets/loading.png') no-repeat center/contain;
+  background: url('../assets/pokeball.png') no-repeat center/contain;
 
   &--loading {
     animation: shake-loading 1.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) infinite;

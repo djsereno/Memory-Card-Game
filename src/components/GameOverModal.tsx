@@ -1,36 +1,36 @@
 import '../styles/Modal.scss';
 
-import ball from '../assets/loading.png';
+import pokeball from '../assets/pokeball.png';
 
-interface ModalProps {
+interface GameOverModalProps {
   currentScore: number;
   highScore: number;
   onAction: () => void;
 }
 
-const Modal: React.FC<ModalProps> = ({ currentScore, highScore, onAction }) => {
+const GameOverModal = ({ currentScore, highScore, onAction }: GameOverModalProps) => {
   const scoreRatio = (currentScore / highScore) * 100;
-  let heading;
-  let emojis;
+  let headingText: string;
+  let emojis: string;
 
   if (scoreRatio > 100) {
-    heading = 'New High Score!';
+    headingText = 'New High Score!';
     emojis = '🎉🏆🤩';
   } else if (scoreRatio >= 90) {
-    heading = 'So Close!';
+    headingText = 'So Close!';
     emojis = '😁👏🤗';
   } else if (scoreRatio >= 70) {
-    heading = 'Good Job!';
+    headingText = 'Good Job!';
     emojis = '😊👍😎';
   } else if (scoreRatio >= 50) {
-    heading = 'Keep Trying!';
+    headingText = 'Keep Trying!';
     emojis = '😢👎😣';
   } else {
-    heading = 'Better Luck Next Time...';
+    headingText = 'Better Luck Next Time...';
     emojis = '😭☠️😖';
-  }  
-  
-  const score =
+  }
+
+  const scoreDisplay =
     currentScore > highScore ? (
       <>
         <span>{`🥇 New Score: ${currentScore}`}</span>
@@ -47,12 +47,12 @@ const Modal: React.FC<ModalProps> = ({ currentScore, highScore, onAction }) => {
     <div className="modal">
       <div className="modal__content">
         <h2 className="modal__heading">
-          <img src={ball} alt="accent" />
-          {heading}
-          <img src={ball} alt="accent" />
+          <img src={pokeball} alt="accent" />
+          {headingText}
+          <img src={pokeball} alt="accent" />
         </h2>
         <p className="modal__emojis">{emojis}</p>
-        <p className="modal__score">{score}</p>
+        <p className="modal__score">{scoreDisplay}</p>
         <button className="modal__button" onClick={onAction}>
           Start New Game
         </button>
@@ -61,4 +61,4 @@ const Modal: React.FC<ModalProps> = ({ currentScore, highScore, onAction }) => {
   );
 };
 
-export default Modal;
+export default GameOverModal;

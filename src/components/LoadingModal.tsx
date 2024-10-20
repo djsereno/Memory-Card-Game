@@ -1,26 +1,25 @@
-import { useState } from 'react';
 import '../styles/LoadingModal.scss';
 
+import { useState } from 'react';
+
 interface LoadingModalProps {
+  endLoadingSequence: () => void;
   isLoaded: boolean;
-  handleAnimationEnd: () => void;
 }
 
-const LoadingModal: React.FC<LoadingModalProps> = ({
-  isLoaded,
-  handleAnimationEnd
-}: LoadingModalProps) => {
-  const [animationState, setAnimationState] = useState<string>('loading');
+const LoadingModal = ({ endLoadingSequence, isLoaded }: LoadingModalProps) => {
+  const [animationState, setAnimationState] = useState<'loading' | 'complete'>('loading');
 
+  // Checks whether the card data is loaded after each animation iteration, and progresses
+  // the loading animation state accordingly so that the proper animations are played
   const handleAnimationIteration = (event: React.AnimationEvent) => {
     if (!event.animationName.includes('shake') || !isLoaded) return;
-
     switch (animationState) {
       case 'loading':
         setAnimationState('complete');
         break;
       case 'complete':
-        handleAnimationEnd();
+        endLoadingSequence();
         break;
     }
   };
