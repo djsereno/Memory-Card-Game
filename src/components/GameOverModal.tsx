@@ -47,9 +47,9 @@ const GameOverModal = ({ currentScore, highScore, onAction }: GameOverModalProps
     <div className="modal">
       <div className="modal__content">
         <h2 className="modal__heading">
-          <img src={pokeball} alt="accent" />
+          <img src={pokeball} alt="accent" draggable="false" />
           {headingText}
-          <img src={pokeball} alt="accent" />
+          <img src={pokeball} alt="accent" draggable="false" />
         </h2>
         <p className="modal__emojis">{emojis}</p>
         <p className="modal__score">{scoreDisplay}</p>

@@ -52,10 +52,10 @@ const Card = ({
       <div className={`flip-card__inner`} style={{ transitionDelay: `${transitionDelay}ms` }}>
         <div
           className={`flip-card__front ${isShining && isClickable ? 'flip-card__front--shine' : ''}`}>
-          <img src={imageUrl} alt="Front of card" />
+          <img src={imageUrl} alt="Front of card" draggable="false" />
         </div>
         <div className="flip-card__back">
-          <img src={cardback} alt="Back of card" />
+          <img src={cardback} alt="Back of card" draggable="false" />
         </div>
       </div>
     </div>
