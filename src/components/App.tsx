@@ -10,6 +10,8 @@ import GameOverModal from './GameOverModal';
 import Header from './Header';
 import LoadingModal from './LoadingModal';
 
+// TODO: fix shine issue when cards shine animation hasn't finished by the time the user clicks, causing them to reanimate once the cards have flipped back over
+
 type GameState =
   | 'fetching-card-data'
   | 'card-data-loaded'
