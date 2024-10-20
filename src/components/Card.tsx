@@ -1,6 +1,6 @@
 import '../styles/Card.scss';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import cardback from '../assets/cardback.png';
 
@@ -22,12 +22,17 @@ const Card = ({
   transitionDelay
 }: CardProps) => {
   const [isShining, setIsShining] = useState<boolean>(false); // Controls the activation of the shining animation
+
   const className = 'flip-card'
     .concat(isRevealed ? ' flip-card--face-up' : ' flip-card--face-down')
     .concat(isClickable ? ' flip-card--clickable' : '');
 
-  const handleMouseEnter = () => {
-    if (isClickable) setIsShining(true); // Initiate the shining animation
+  useEffect(() => {
+    if (!isClickable) setIsShining(false);
+  }, [isClickable]);
+
+  const handleMouseOver = () => {
+    if (isClickable && !isShining) setIsShining(true); // Initiate the shining animation
   };
 
   const handleAnimationEnd = () => {
@@ -41,7 +46,7 @@ const Card = ({
         onClick();
         setIsShining(false);
       }}
-      onMouseEnter={handleMouseEnter}
+      onMouseOver={handleMouseOver}
       onAnimationEnd={handleAnimationEnd}
       onTransitionEnd={onTransitionEnd}>
       <div className={`flip-card__inner`} style={{ transitionDelay: `${transitionDelay}ms` }}>

@@ -10,8 +10,6 @@ import GameOverModal from './GameOverModal';
 import Header from './Header';
 import LoadingModal from './LoadingModal';
 
-// TODO: fix shine issue when cards shine animation hasn't finished by the time the user clicks, causing them to reanimate once the cards have flipped back over
-
 type GameState =
   | 'fetching-card-data'
   | 'card-data-loaded'
@@ -23,25 +21,27 @@ type GameState =
   | 'game-over';
 
 const App = () => {
-  const boardSize = 8;
-  const deckSize = 25;
-  const hasFetched = useRef(false);
+  const BOARD_SIZE = 8;
+  const DECK_SIZE = 25;
+
   const [gameState, setGameState] = useState<GameState>('fetching-card-data');
   const [allCards, setAllCards] = useState<CardData[]>([]);
   const [deckCardIds, setDeckCardIds] = useState<number[]>([]);
-  const [handCardIds, setHandCardIds] = useState<number[]>(Array(boardSize).fill(-1));
+  const [handCardIds, setHandCardIds] = useState<number[]>(Array(BOARD_SIZE).fill(-1));
   const [selectionHistory, setSelectionHistory] = useState<number[]>([]);
-  const [isFaceUp, setIsFaceUp] = useState<boolean[]>(Array(boardSize).fill(false));
+  const [isFaceUp, setIsFaceUp] = useState<boolean[]>(Array(BOARD_SIZE).fill(false));
   const [currentScore, setCurrentScore] = useState<number>(0);
   const [highScore, setHighScore] = useState<number>(0);
 
+  const hasFetched = useRef(false);
+
   const getNewDeck = useCallback(() => {
-    const newDeckIds = getRandomArray(deckSize, allCards.length);
+    const newDeckIds = getRandomArray(DECK_SIZE, allCards.length);
     setDeckCardIds(newDeckIds);
   }, [allCards.length]);
 
   const getNewHand = useCallback(() => {
-    const newCardIds = getRandomSubset(boardSize, deckCardIds);
+    const newCardIds = getRandomSubset(BOARD_SIZE, deckCardIds);
     setHandCardIds(newCardIds);
   }, [deckCardIds]);
 
