@@ -1,6 +1,6 @@
 import '../styles/App.scss';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { CardData } from '../interfaces/types';
 import getCardData from '../utils/card-data';
@@ -23,6 +23,7 @@ type GameState =
 const App = () => {
   const boardSize = 8;
   const deckSize = 25;
+  const hasFetched = useRef(false);
   const [gameState, setGameState] = useState<GameState>('fetching-card-data');
   const [allCards, setAllCards] = useState<CardData[]>([]);
   const [deckCardIds, setDeckCardIds] = useState<number[]>([]);
@@ -44,21 +45,16 @@ const App = () => {
 
   // Get card data from API
   useEffect(() => {
-    let isMounted = true;
-
     const fetchCardData = async () => {
+      if (hasFetched.current) return; // Prevent extra API calls with Strict Mode on
+
+      hasFetched.current = true;
       const data = await getCardData();
-      if (isMounted) {
-        setAllCards(data);
-        setGameState('card-data-loaded');
-      }
+      setAllCards(data);
+      setGameState('card-data-loaded');
     };
 
     fetchCardData();
-
-    return () => {
-      isMounted = false; // This is to avoid double call due to React Strict Mode
-    };
   }, []);
 
   // Game state progression

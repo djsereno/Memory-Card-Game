@@ -1,13 +1,26 @@
-import { ApiData, ApiResponse, CardData } from '../interfaces/types';
+import { CardData } from '../interfaces/types';
 
 const API_KEY = import.meta.env.VITE_PTCG_API_KEY;
+
+interface ApiData {
+  name: string;
+  images: {
+    small: string;
+    large: string;
+  };
+}
+
+interface ApiResponse {
+  data: ApiData[];
+}
 
 const fetchApiResponse = async () => {
   try {
     const response = await fetch(
       'https://api.pokemontcg.io/v2/cards?' +
-        'page=1&pageSize=250&q=(' +
-        'rarity:"Illustration Rare" OR ' +
+        'page=1&pageSize=250&' +
+        'select=name,images&' +
+        'q=(rarity:"Illustration Rare" OR ' +
         'rarity:"Special Illustration Rare")',
       {
         method: 'GET',
@@ -38,16 +51,8 @@ const getCardData = async (): Promise<CardData[]> => {
   return cardData;
 };
 
-// const getRandomCardData = async (numCards: number) => {
-//   const apiResponse = await fetchApiResponse();
-//   const initialCardData = extractCardData(apiResponse);
-//   const randomIndexes = getRandomArray(numCards, initialCardData.length);
-//   const cardData = randomIndexes.map((index) => initialCardData[index]);
-
-//   return cardData;
-// };
-
 export default getCardData;
+
 // const rarities = [
 //   'ACE SPEC Rare',
 //   'Amazing Rare',

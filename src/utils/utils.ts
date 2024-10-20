@@ -1,31 +1,8 @@
 /**
- * Generates an array of numbers from 0 to n-1.
- * @param {number} n the length of the array
- * @returns {number[]} an array of numbers from 0 to n-1
- */
-const getSequenceArray = (n: number) => {
-  return Array.from({ length: n }, (_, index) => index);
-};
-
-/**
- * Shuffles an array in place.
- * @template T
- * @param {T[]} arr The array to shuffle
- * @returns {T[]} The shuffled array
- */
-const shuffleArray = <T>(arr: T[]): T[] => {
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-  return arr;
-};
-
-/**
- * Generates an array of n unique random integers between 0 and upperBound (exclusive).
+ * Generates an array of size n with unique random integers between 0 and upperBound (exclusive).
  * @param {number} n the length of the array
  * @param {number} upperBound the upper bound. If not specified, defaults to n
- * @returns {number[]} an array of n unique random integers between 0 and upperBound
+ * @returns {number[]} an array of size n with unique random integers between 0 and upperBound
  */
 const getRandomArray = (n: number, upperBound: number = n): number[] => {
   const result: number[] = [];
@@ -41,7 +18,7 @@ const getRandomArray = (n: number, upperBound: number = n): number[] => {
 };
 
 /**
- * Selects a random subset of elements from the given array.
+ * Generates a random subset of size n containing elements from the given array, arr.
  * @template T
  * @param {number} n The number of elements to select
  * @param {T[]} arr The array to sample from
@@ -61,4 +38,4 @@ const getRandomSubset = <T>(n: number, arr: T[]): T[] => {
   return result;
 };
 
-export { getRandomArray, getRandomSubset, getSequenceArray, shuffleArray };
+export { getRandomArray, getRandomSubset };
