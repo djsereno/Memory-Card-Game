@@ -1,0 +1,1 @@
+{"root":["./src/main.tsx","./src/vite-env.d.ts","./src/components/App.tsx","./src/components/Card.tsx","./src/components/GameOverModal.tsx","./src/components/Header.tsx","./src/components/LoadingModal.tsx","./src/interfaces/types.ts","./src/utils/card-data.ts","./src/utils/utils.ts"],"version":"5.6.2"}
